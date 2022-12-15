@@ -1,0 +1,23 @@
+{
+  "name": "collabcrafter2",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.mjs",
+  "type": "module",
+  "scripts": {
+    "start": "node .",
+    "watch": "node --watch .",
+    "sync": "node src/deploy-commands.mjs",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "discord.js": "^14.7.1",
+    "dotenv": "^16.0.3",
+    "mongodb": "^4.12.1"
+  },
+  "devDependencies": {
+    "eslint": "^8.29.0"
+  }
+}
