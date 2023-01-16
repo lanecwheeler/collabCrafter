@@ -37,7 +37,7 @@ export default {
 			const user = interaction.options.get('user')?.value ?? userId
 
 			const isMod = interaction.member.permissions.has(PermissionFlagsBits.ModerateMembers);
-			if(!isMod && user?.value !== userId) await interaction.reply({
+			if(!isMod && user !== userId) await interaction.reply({
 				content: "You do not have permission to view this user. Naughty Naughty!",
 				ephemeral: true
 			})
@@ -49,7 +49,7 @@ export default {
 					.setTitle("Uh oh")
 					.setDescription(`We can't find that user. Please ensure they have set their info.`)
 				
-				const guildMember = await interaction.guild.members.fetch(userId);
+				const guildMember = await interaction.guild.members.fetch(user);
 				return new EmbedBuilder()
 					.setColor([97, 23, 181])
 					.setTitle(`${guildMember.nickname ?? guildMember.user.username}'s Info`)

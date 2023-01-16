@@ -1,7 +1,7 @@
-// import config from '../data/testingFlatFile.json' assert { type: 'json' }
+await import ("dotenv").then(i => i.config());
 
 import { MongoClient } from 'mongodb'
-const url = "mongodb://127.0.0.1:27017"
+const url = process.env.MONGODB_URL;
 const client = new MongoClient(url);
 const db = client.db('collabCrafter');
 

@@ -76,7 +76,7 @@ export default {
 				
 				changes.forEach(change => embed.addFields({name: change.field, value: change.value}))
 				if(!res.lastErrorObject.updatedExisting)
-					embed.setFooter('Be sure to use /enable so you can be added to collabs!')
+					embed.setFooter({ text: 'Be sure to use /enable so you can be added to collabs!'})
 
 				interaction.reply({
 					embeds: [embed],
@@ -86,6 +86,7 @@ export default {
 			
 			
 		} catch (err) {
+		    console.log(err)
 			interaction.reply({
 				content: "Something went terribly TERRIBLY wrong. Oh no.",
 				ephemeral: true

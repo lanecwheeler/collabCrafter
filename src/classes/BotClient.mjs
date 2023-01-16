@@ -16,30 +16,11 @@ class BotClient extends Client {
                 GatewayIntentBits.GuildVoiceStates,
                 GatewayIntentBits.MessageContent,
             ],
-            // makeCache: Options.cacheWithLimits({
-            //     ApplicationCommandManager: {
-            //         maxSize: -1,
-            //     },
-            //     GuildInviteManager:  {
-            //         maxSize: -1,
-            //     },
-            //     GuildStickerManager: {
-            //         maxSize: -1,
-            //     },
-            //     ReactionManager: {
-            //         maxSize: -1,
-            //     },
-            //     PresenceManager: {
-            //         maxSize: -1,
-            //     },
-            //     MessageManager: {
-            //         maxSize: -1,
-            //     }
-            // })
         });
         this.envConfig = {
             discordToken : process.env.DISCORD_TOKEN,
             prefix : process.env.PREFIX,
+            mongodbUrl: process.env.MONGODB_URL,
         };
         this.commands = new Collection();
         this.registerCommands();
