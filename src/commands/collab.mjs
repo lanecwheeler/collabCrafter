@@ -35,7 +35,7 @@ export default {
 			await Promise.all(Array.from(members.values()).map(({id: user}) => 
 				new Promise(async (res, rej) => {
 					const data = await uc.getMemberData(user)
-					if (!data || data.enabled === false) rej(data)
+					if (!data || data.enabled === false || !data.name) rej(data)
 					else {
 						const message = data.collabMessage ? data.collabMessage + ' -' : ''
 						const link = data.link ? data.link : 'twitch.tv/' + data.name

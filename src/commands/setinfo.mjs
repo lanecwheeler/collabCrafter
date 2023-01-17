@@ -27,16 +27,16 @@ export default {
 		let choices = [];
 
 		if (focusedOption.name === 'user') {
-			(await interaction.guild.members.fetch()).forEach((member, id) => {
-				const optContainsQuery = 
-					member.nickname?.toLowerCase().includes(focusedOption.value.toLowerCase()) 
-					|| member.user.username.toLowerCase().includes(focusedOption.value.toLowerCase()) 
-					|| member.user.id.includes(focusedOption.value);
-				if(focusedOption.value && !optContainsQuery) return;
+			const members = await interaction.guild.members.fetch({
+				query: focusedOption.value.toLowerCase(),
+				limit: 25
+			});
+			for(let [id, member] of members) {
 				const userNickCombo = `${member.user.username} ${member.nickname ? `(${member.nickname})` : ''}`
 				if(isMod || id == interaction.member.id)
 					choices.push({'name': userNickCombo, 'value': id})
-			})
+			}
+			
 			await interaction.respond(choices)
 		}
 	},
