@@ -29,7 +29,6 @@ export default {
 		}
 	},
 	async execute(interaction) {
-		console.log('lookin');
 		try {
 			const { 
 				guildId, 
@@ -44,7 +43,6 @@ export default {
 			})
 
 			const uc = new UserConfigs(guildId);
-			console.log(uc)
 			const embed = await uc.getMemberData(user).then(async res => {
 				if(!res) return new EmbedBuilder()
 					.setColor([223, 70, 85])
