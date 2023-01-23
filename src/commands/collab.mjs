@@ -3,9 +3,36 @@ import { UserConfigs } from '../classes/index.js'
 
 export default {
 	data: new SlashCommandBuilder()
-		.setName('collab')
-		.setDescription('Replies with pastable collab string for everyone in your voice call!'),
+			.setName('collab')
+			.setDescription('Replies with pastable collab string for everyone in your voice call!')
+			.addStringOption(option => 
+				option.setName('streamer')
+					.setDescription('Specify the streamer to exclude from the command')
+					.setAutocomplete(true))
+			.addStringOption(option => 
+				option.setName('message')
+					.setDescription('A custom message to display before your collab list')
+					.setAutocomplete(true)),
+	async autocomplete(interaction) {
+		const focusedOption = interaction.options.getFocused(true);
+		let choices = [];
+
+		if (focusedOption.name === 'streamer') {
+			const members = await interaction.channel.members.filter(member =>  
+				member.nickname?.toLowerCase().includes(focusedOption.value.toLowerCase())
+				|| member.user.username.toLowerCase().includes(focusedOption.value.toLowerCase())
+				|| member.id.toLowerCase().includes(focusedOption.value.toLowerCase()));
+			for(let [id, member] of members) {
+				const userNickCombo = `${member.user.username} ${member.nickname ? `(${member.nickname})` : ''}`
+				choices.push({'name': userNickCombo, 'value': id})
+			}
+			await interaction.respond(choices)
+		}
+	},
 	async execute(interaction) {
+		const streamer = interaction.options.get('streamer')?.value;
+		const message = interaction.options.get('message')?.value;
+
 		const {
 			channelId,
 			user: {id: userId},
@@ -24,7 +51,7 @@ export default {
 		})
 
 		const { members } = await collabChannel.fetch()
-		members.delete(userId)
+		members.delete(streamer ?? userId)
 		if(!members.size) return interaction.reply({
 			content: 'You\'re not currently in a collab. Sad.',
 			ephemeral: true
@@ -35,7 +62,7 @@ export default {
 			await Promise.all(Array.from(members.values()).map(({id: user}) => 
 				new Promise(async (res, rej) => {
 					const data = await uc.getMemberData(user)
-					if (!data || data.enabled === false || !data.name) rej(data)
+					if (!data || !data.enabled || !data.name) rej(data)
 					else {
 						const message = data.collabMessage ? data.collabMessage + ' -' : ''
 						const link = data.link ? data.link : 'twitch.tv/' + data.name
@@ -65,17 +92,18 @@ export default {
 			const opt1 = (await collabString()).filter(a => a).join(' ').length,
 				opt2 = (await collabString(1)).filter(a => a).join(' ').length,
 				opt3 = (await collabString(2)).filter(a => a).join(' ').length,
+				msg = message?.length ?? 0,
 				cmd = "!cmd edit collab ".length;
 
-			if (opt1 + cmd < 501) return 0
-			else if (opt2 + cmd < 501) return 1
-			else if (opt3 + cmd < 501) return 2
+			if (msg + opt1 + cmd < 501) return 0
+			else if (msg + opt2 + cmd < 501) return 1
+			else if (msg + opt3 + cmd < 501) return 2
 			else return 3
 		}
 
 		collabString(await collabReduceLevel()).then(async (res) => {
 			const finalErrors = Object.values(collabErrorEmbeds)
-			const finalCollab = res.join(' ')
+			const finalCollab = (message ? message + ' ' : '') + res.join(' ')
 
 			if(finalErrors.length) await interaction.reply({ embeds: finalErrors, ephemeral : true })
 
