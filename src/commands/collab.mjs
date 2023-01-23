@@ -39,7 +39,7 @@ export default {
 					else {
 						const message = data.collabMessage ? data.collabMessage + ' -' : ''
 						const link = data.link ? data.link : 'twitch.tv/' + data.name
-						res(`[ ${reduceLevel < 1 ? message : ''} ${data.name} ${(reduceLevel < 2 && link) ? '- ' + link : ''} ]`)
+						res(`[ ${reduceLevel < 1 ? message : ''}${' ' + data.name + ' ' ?? ''}${(reduceLevel < 2 && link) ? '- ' + link : ''} ]`)
 					}
 				}).catch(async data => {
 					const member = await guild.members.fetch(user)
